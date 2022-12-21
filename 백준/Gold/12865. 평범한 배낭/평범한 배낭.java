@@ -1,34 +1,51 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
- 
-public class Main{
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Main {
+	
+	static int n,k;
+	static int[][] backpack;
+	static int[] dp;
+	static int[] temp;
+	
+	public static void main(String[] args) {
 		
-		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+		Scanner sc = new Scanner(System.in);
 		
-		int N = Integer.parseInt(st.nextToken());
-		int K = Integer.parseInt(st.nextToken());
- 
-		int[] W = new int[N + 1]; // 무게
-		int[] V = new int[N + 1]; // 가치
-		int[] dp = new int[K + 1];
- 
-		for (int i = 1; i <= N; i++) {
-			st = new StringTokenizer(br.readLine(), " ");
-			W[i] = Integer.parseInt(st.nextToken());
-			V[i] = Integer.parseInt(st.nextToken());
-		}
- 
-		for (int i = 1; i <= N; i++) {
-			
-			// K부터 탐색하여 담을 수 있는 무게 한계치가 넘지 않을 때까지 반복 
-			for (int j = K; j - W[i] >= 0; j--) {
-				dp[j] = Math.max(dp[j], dp[j - W[i]] + V[i]);
+		n = sc.nextInt();
+		k = sc.nextInt();
+		backpack = new int[n][2];
+		dp = new int[k+1];
+		temp = new int[k+1];
+		
+		for (int i=0; i<n; i++) {
+			for (int j=0; j<2; j++) {
+				backpack[i][j] = sc.nextInt();
 			}
 		}
-		System.out.println(dp[K]);
+		
+		for (int i=1; i<=k; i++) {
+			for (int j=0; j<4; j++) {
+				if (backpack[j][0] <= i) {
+					temp[i] = Math.max(backpack[j][1], temp[i]); 
+				}
+			}
+			System.out.print(temp[i] + " ");
+		}
+		System.out.println();
+
+		for (int i=1; i<=k; i++) {
+			for (int j=0; j<=i/2; j++) {
+				if (i-j != j) {
+					dp[i] = Math.max(temp[i-j] + temp[j], dp[i]);	
+
+				}
+			}
+			System.out.print(dp[i] + " ");
+		}
+		System.out.println();
+
+		Arrays.sort(dp);
+		System.out.println(dp[k]);
 	}
 }
