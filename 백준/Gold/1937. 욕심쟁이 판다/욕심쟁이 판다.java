@@ -1,62 +1,53 @@
-import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
-public class Main {
+public class Main1937_1 {
 
-    public static void main(String[] args) throws NumberFormatException, IOException {
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
-        N = Integer.parseInt(br.readLine());
-        forest = new int[N][N];
-        dp = new int[N][N];
-
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
-                forest[i][j] = Integer.parseInt(st.nextToken());
-            }
-        }
-
-        answer = 0;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-
-                answer = Math.max(answer, dfs(i, j));
-
-            }
-        }
-
-        System.out.println(answer);
-
-    }
-
-    static int N, answer;
-    static int[][] forest;
-    static int[][] dp;
-    static int[][] move = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
-
-    static int dfs(int i, int j) {
-
-        if (dp[i][j] != 0) {
-            return dp[i][j];
-        }
-
-        int cnt = 0;
-
-        for (int d = 0; d < 4; d++) {
-            int x = i + move[d][0];
-            int y = j + move[d][1];
-
-            if (x<0 || x>=N || y<0 || y>=N || forest[i][j] >= forest[x][y]) {
-                continue;
-            }
-
-            cnt = Math.max(cnt, dfs(x, y));
-        }
-
-        return dp[i][j] = cnt+1;
-    }
-
+	static int n;
+	static int[][] map;
+	static int[][] dp;
+	static int[] ax = {1,-1,0,0};
+	static int[] ay = {0,0,-1,1};
+	static int max;
+	
+	public static int dfs(int x, int y) {
+		
+		if (dp[x][y] != 0) {
+			return dp[x][y];	
+		}
+		
+		dp[x][y] = 1;
+		
+		for (int i=0; i<4; i++) {
+			int nx = x + ax[i];
+			int ny = y + ay[i];
+			
+			if (nx >= 0 && ny >= 0 && nx < n && ny < n && map[nx][ny] > map[x][y]) {
+				dp[x][y] = Math.max(dp[x][y], dfs(nx, ny) + 1);
+			}
+		}
+		
+		return dp[x][y];
+	}
+	
+	public static void main(String[] args) {
+		
+		Scanner sc = new Scanner(System.in);
+		
+		n = sc.nextInt();
+		map = new int[n][n];
+		dp = new int[n][n];
+		
+		for (int i=0; i<n; i++) {
+			for (int j=0; j<n; j++) {
+				map[i][j] = sc.nextInt();
+			}
+		}
+		
+		for (int i=0; i<n; i++) {
+			for (int j=0; j<n; j++) {
+				max = Math.max(max, dfs(i,j));
+			}
+		}
+		System.out.println(max);
+	}
 }
