@@ -1,33 +1,30 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
-		Scanner sc = new Scanner(System.in);
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		int N = sc.nextInt();
-		int M = sc.nextInt();
-		int[] numbers = new int[N+1];
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
 		int[] sum = new int[N+1];
-		int[][] section = new int[M][2];
 		
+		st = new StringTokenizer(br.readLine());
+
 		for (int i=1; i<=N; i++) {
-			numbers[i] = sc.nextInt();
+			sum[i] = sum[i-1] + Integer.parseInt(st.nextToken());
 		}
 		
 		for (int i=0; i<M; i++) {
-			for (int j=0; j<2; j++) {
-				section[i][j] = sc.nextInt();
-			}
-		}
-		
-		for (int i=1; i<=N; i++) {
-			sum[i] = sum[i-1] + numbers[i];
-		}
-		
-		for (int i=0; i<M; i++) {
-			System.out.println(sum[section[i][1]] - sum[section[i][0] - 1]);
+			st = new StringTokenizer(br.readLine());
+			int k = Integer.parseInt(st.nextToken());
+			int m = Integer.parseInt(st.nextToken());
+			System.out.println(sum[m] - sum[k-1]);
 		}
 	}
 }
