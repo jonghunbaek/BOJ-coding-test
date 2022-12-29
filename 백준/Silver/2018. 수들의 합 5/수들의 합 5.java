@@ -1,25 +1,22 @@
-import java.util.Scanner;
+import java.io.*;
+// 5분
 public class Main {
-  public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
-    int N = sc.nextInt();
-    int count = 1;
-    int start_index = 1;
-    int end_index = 1;
-    int sum = 1;
-    while (end_index != N) {
-      if (sum == N) {         //sum == N ->  End index++;  sum = sum + End index;  count++;  
-        count++;
-        end_index++;
-        sum = sum + end_index;
-      } else if (sum > N) {   //sum > N ->  sum = sum - Start index;  Start index++;
-        sum = sum - start_index;
-        start_index++;
-      } else {                //sum < N ->  End index++;  sum = sum + End index;
-        end_index++;
-        sum = sum + end_index;
-      }
-    }
-    System.out.println(count);
-  }
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		int cnt=0; //가지수(정답)
+		for(int i=1;i<=N;i++) { //시작
+			int sum=0;
+			for(int j=i;j<=N;j++) { //시작점부터 순차적으로 더하기
+				sum +=j;
+				if(sum>N)
+					break;
+				else if(sum==N) {
+					cnt++;
+					break;
+				}
+			}
+		}
+		System.out.println(cnt);
+	}
 }
