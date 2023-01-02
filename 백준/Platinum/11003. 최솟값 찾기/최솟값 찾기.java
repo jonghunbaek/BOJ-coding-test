@@ -1,57 +1,36 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
 public class Main {
-
-	static int N,L;
-	static Deque<Node> dq;
-	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken()), l = Integer.parseInt(st.nextToken());
+
+		ArrayDeque<Integer> deque = new ArrayDeque<>();
+		int[] arr = new int[n];
 		
-		N = Integer.parseInt(st.nextToken());
-		L = Integer.parseInt(st.nextToken());
+		StringBuilder sb = new StringBuilder();
 		st = new StringTokenizer(br.readLine());
-		dq = new LinkedList<Node>();
-	
-		for (int i=0; i<N; i++) {
-			int temp = Integer.parseInt(st.nextToken());
+		for(int i = 0; i < n; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
 			
-			while (!dq.isEmpty() && dq.getLast().val > temp) {
-				dq.removeLast();
+			while(!deque.isEmpty() && arr[deque.peekLast()] > arr[i]) {
+				deque.pollLast();
 			}
 			
-			dq.addLast(new Node(temp, i));
+			deque.offer(i);
 			
-			if (dq.getFirst().idx <= i - L) {
-				dq.removeFirst();
+			if(i - deque.peekFirst() >= l) {
+				deque.pollFirst();
 			}
 			
-			bw.write(dq.getFirst().val + " ");
+			sb.append(arr[deque.peekFirst()]).append(" ");
 		}
-		
-		bw.flush();
-		bw.close();
-	}
-	
-	static class Node {
-		private int val;
-		private int idx;
-		
-		public Node(int val, int idx) {
-			this.val = val;
-			this.idx = idx;
-		}
+		System.out.print(sb);
 	}
 }
