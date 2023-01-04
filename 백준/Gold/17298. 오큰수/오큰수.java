@@ -1,61 +1,35 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Stack;
-import java.util.StringTokenizer;
-
+import java.util.*;
+import java.io.*;
 public class Main {
-
-	static int N;
-	static int[] sequence;
-	static int[] NGE;
-	static Stack<Integer> stack;
-	
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		sequence = new int[N];
-		NGE = new int[N];
-		stack = new Stack<Integer>();
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		
-		for (int i=0; i<N; i++) {
-			sequence[i] = Integer.parseInt(st.nextToken());
-		}
-		
-		stack.push(0); // 현재 원소와 스택의 top값을 비교해야하는데 0번째 원소는 스택이 비어있는 상태이기 때문이다.
-		for (int i=1; i<N; i++) {
-			if (sequence[i] <= sequence[stack.peek()]) {
-				stack.push(i);
-				continue;
-			}
-			
-			if (sequence[i] > sequence[stack.peek()]) {
-				while (sequence[i] > sequence[stack.peek()]) {
-					
-					NGE[stack.pop()] = sequence[i];
-					if (stack.isEmpty()) {
-						break;
-					}
-				}
-				
-				stack.push(i);
-			}
-		}
-		
-		while (!stack.isEmpty()) {
-			NGE[stack.pop()] = -1;
-		}
-		
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		for (int i=0; i<N; i++) {
-			bw.write(NGE[i] + " ");
-		}
-		bw.write("\n");
-		bw.flush();;
-	}
+  public static void main(String[] args) throws IOException {
+    BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(bf.readLine());
+    int[]A = new int[n];    // 수열 배열 생성
+    int[]ans = new int[n]; // 정답 배열 생성
+    String[] str = bf.readLine().split(" ");
+    for (int i = 0; i < n; i++) {
+        A[i] = Integer.parseInt(str[i]);
+    }
+    Stack<Integer> myStack = new Stack<>();
+    myStack.push(0); // 처음에는 항상 스택이 비어있으므로 최초 값을 push하여 초기화
+    for (int i = 1; i < n; i++) {
+        //스택 비어있지 않고 현재 수열이 스택 TOP인덱스 가르키는 수열보다 크면
+        while (!myStack.isEmpty() && A[myStack.peek()] < A[i]) {  
+            ans[myStack.pop()] = A[i];  //정답 배열에 오큰수를 현재 수열로 저장하기
+        }
+        myStack.push(i); //신규데이터 push  
+    }
+    while (!myStack.empty()) {
+        // 반복문을 다 돌고 나왔는데 스택이 비어있지 않다면 빌 때 까지
+        ans[myStack.pop()] = -1;
+        // stack에 쌓인 index에 -1을 넣고
+    }
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    for (int i = 0; i < n; i++) {
+        bw.write(ans[i] + " ");
+        // 출력한다
+    }
+    bw.write("\n");
+    bw.flush();
+  }
 }
