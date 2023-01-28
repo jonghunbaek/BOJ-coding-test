@@ -1,65 +1,63 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
-	
 	static int N,M;
-	static int[][] maze;
-	static boolean[][] visited;
-	static int[] axisX = {1,-1,0,0};
-	static int[] axisY = {0,0,1,-1};
-	
-	public static void bfs(int x, int y) {
-		Queue<int[]> q = new LinkedList<int[]>();
-		q.add(new int[] {x,y});
-		
-		while(!q.isEmpty()) {
-			int[] now = q.poll();
-			int noX = now[0];
-			int noY = now[1];
-			
-			for (int i=0; i<4; i++) {
-				int neX = noX + axisX[i];
-				int neY = noY + axisY[i];
-				
-				if (neX<0 || neY<0 || neX>=N || neY>=M) {
-					continue;
-				} 
-				if (visited[neX][neY] || maze[neX][neY] == 0) {
-					continue;
-				} 
-				
-				q.add(new int[] {neX, neY});
-				maze[neX][neY] = maze[noX][noY] + 1;
-				visited[neX][neY] = true;
-				
-			}
-		}
-		
-	}
- 
-	public static void main(String[] args) {
-		
-		Scanner sc = new Scanner(System.in);
-		
-		N = sc.nextInt();
-		M = sc.nextInt();
-		maze = new int[N][M];
-		visited = new boolean[N][M];
+	static int[][] map;
+	static int[] ax = {1,-1,0,0};
+	static int[] ay = {0,0,1,-1};
+	static int cnt;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		map = new int[N][M];
 		
 		for (int i=0; i<N; i++) {
-			String temp = sc.next();
+			String temp = br.readLine();
 			for (int j=0; j<M; j++) {
-				maze[i][j] = temp.charAt(j)-'0';
+				map[i][j] = temp.charAt(j) - '0';
 			}
 		}
 		
-		sc.close();
-		
-		visited[0][0] = true;
-		bfs(0, 0);
-	
-		System.out.println(maze[N-1][M-1]);
+		bfs(0,0);
+		System.out.println(map[N-1][M-1]);
 	}
+	
+	public static void bfs(int x, int y) {
+		Queue<Node> q = new LinkedList<Node>();
+		q.add(new Node(x, y));
+		
+		while (!q.isEmpty()) {
+			Node temp = q.poll();
+			if (temp.x == N-1 && temp.y == M-1) {
+				return;
+			}
+			for (int i=0; i<4; i++) {
+				int nx = temp.x + ax[i];
+				int ny = temp.y + ay[i];
+				
+				if (nx>=0 && ny>=0 && nx<N && ny<M && map[nx][ny] == 1) {
+					q.add(new Node(nx, ny));
+					map[nx][ny] += map[temp.x][temp.y];
+				}
+			}
+		}
+	}
+	
+	static class Node {
+		private int x;
+		private int y;
+		
+		public Node(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
 }
