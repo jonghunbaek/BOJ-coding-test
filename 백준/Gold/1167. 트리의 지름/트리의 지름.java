@@ -33,14 +33,14 @@ public class Main {
 			}
 		}
 		
-		int temp = dfs(2, 0);
+		dfs(1, 0);
 		visited = new boolean[V+1];
-		temp = dfs(maxNode, 0);
+		dfs(maxNode, 0);
 		
 		System.out.println(max);
 	}
 	
-	public static int dfs(int node, int distance) {
+	public static void dfs(int node, int distance) {
 		visited[node] = true;
 		if (max < distance) {
 			max = distance;
@@ -54,7 +54,5 @@ public class Main {
 				dfs(temp, distance + tree[node].get(temp));
 			}
 		}
-
-		return node;
 	}
 }
