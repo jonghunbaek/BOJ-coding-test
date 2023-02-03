@@ -24,6 +24,6 @@ public class Main {
 			res = mid;
 			end = mid - 1;
 		}
-		System.out.println(res);
+		System.out.println(start);
 	}
 }
