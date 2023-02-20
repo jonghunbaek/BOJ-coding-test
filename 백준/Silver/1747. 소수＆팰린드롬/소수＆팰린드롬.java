@@ -1,40 +1,49 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
+    private static final int MAX = 1003001;
+    boolean[] arr;
 
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int N = Integer.parseInt(br.readLine());
-		int[] arr = new int[1004000];
-		for (int i=2; i<arr.length; i++) {
-			arr[i] = i;
-		}
-		
-		for (int i=2; i<Math.sqrt(arr.length); i++) {
-			if (arr[i] == 0) {
-				continue;
-			}
-			for (int j=i+i; j<arr.length; j+=i) {
-				arr[j] = 0;
-			}
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		for (int i=N; i<arr.length; i++) {
-			sb.setLength(0);
-			if (arr[i] != 0) {
-				int temp = arr[i];
-				while (temp != 0) {
-					sb.append(temp%10);
-					temp /= 10;
-				}		
-				if (Integer.parseInt(sb.toString()) == arr[i]) {
-					System.out.println(sb.toString());
-					return;
-				} 
-			}
-		}
-	}
+    private boolean isPalindrome(int pn) {
+        String tmp = String.valueOf(pn);
+        for (int i = 0; i < tmp.length()/2; i++) {
+            if (tmp.charAt(i) != tmp.charAt(tmp.length()-1-i))
+                return false;
+        }
+        return true;
+    }
+
+    private void initPnAndPalindrome() {
+        arr = new boolean[MAX+1];
+        for (int i = 2; i <= Math.sqrt(MAX); i++) {
+            int base = i;
+            while ((base+=i) <= MAX) {
+                arr[base] = true;
+            }
+        }
+
+        for (int i = 2; i < arr.length; i++) {
+            if (!arr[i] && !isPalindrome(i)) {
+                arr[i] = true;
+            }
+        }
+    }
+
+    private void solution() throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        if (n == 1) n = 2;
+        initPnAndPalindrome();
+        for (int i = n; i < arr.length; i++) {
+            if (!arr[i]) {
+                System.out.println(i);
+                return;
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        new Main().solution();
+    }
 }
