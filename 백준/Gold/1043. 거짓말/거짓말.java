@@ -1,71 +1,90 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
+
 public class Main {
-  public static int[] parent;
-  public static int[] trueP;
-  public static ArrayList<Integer>[] party;
-  public static int result;
-  public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
-    int N = sc.nextInt();
-    int M = sc.nextInt();
-    int T = sc.nextInt();
-    result = 0;
-    trueP = new int[T];
-    for (int i = 0; i < T; i++) { 
-      trueP[i] = sc.nextInt();
-    }
-    party = new ArrayList[M];
-    for (int i = 0; i < M; i++) {
-      party[i] = new ArrayList<Integer>();
-      int party_size = sc.nextInt();
-      for (int j = 0; j < party_size; j++) {
-        party[i].add(sc.nextInt());
-      }
-    }
-    parent = new int[N + 1];
-    for (int i = 0; i <= N; i++) { // 대표 노드를 자기 자신으로 초기화 하기
-      parent[i] = i;
-    }
-    for (int i = 0; i < M; i++) { // 각 파티에 참여한 사람들을 하나의 그룹으로 만들기 -> union 연산
-      int firstPeople = party[i].get(0);
-      for (int j = 1; j < party[i].size(); j++) {
-        union(firstPeople, party[i].get(j));
-      }
-    }
-    for (int i = 0; i < M; i++) { // 각 파티에서 진실을 아는 사람과 같은 그룹에 있다면 과장 할 수 없음
-      boolean isPossible = true;
-      int cur = party[i].get(0);
-      for (int j = 0; j < trueP.length; j++) {
-        if (find(cur) == find(trueP[j])) {
-          isPossible = false;
-          break;
-        }
-      }
-      if (isPossible)
-        result++;
-    }
-    System.out.println(result);
-  }
-  public static void union(int a, int b) { // union 연산 : 바로 연결이 아닌 대표 노드끼리 연결하여 줌
-    a = find(a);
-    b = find(b);
-    if (a != b) {
-      parent[b] = a;
-    }
-  }
-  public static int find(int a) { // find 연산
-    if (a == parent[a])
-      return a;
-    else
-      return parent[a] = find(parent[a]); // 재귀함수의 형태로 구현
-  }
-  public static boolean checkSame(int a, int b) { // 두 원소가 같은 집합인지 확인
-    a = find(a);
-    b = find(b);
-    if (a == b) {
-      return true;
-    }
-    return false;
-  }
+
+	static int N,M;
+	static int[] partyPeople;
+	static List<int[]> parties;
+	static int[] truePeople;
+	static int cnt;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		partyPeople = new int[N+1];
+		parties = new ArrayList<int[]>();
+		for (int i=1; i<=N; i++) {
+			partyPeople[i] = i;
+		}
+		st = new StringTokenizer(br.readLine());
+		int truePeopleSize = Integer.parseInt(st.nextToken());
+		if (truePeopleSize == 0) {
+			System.out.println(M);
+			return;
+		}
+		truePeople = new int[truePeopleSize];
+		for (int i=0; i<truePeopleSize; i++) {
+			truePeople[i] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(truePeople);
+		int firstPerson = truePeople[0];
+		for (int i=1; i<truePeopleSize; i++) {
+			partyPeople[truePeople[i]] = firstPerson;
+		}
+		for (int i=0; i<M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int party = Integer.parseInt(st.nextToken());
+			parties.add(new int[party]);
+			int pre = -1;
+			for (int j=0; j<party; j++) {
+				int current = Integer.parseInt(st.nextToken());
+				parties.get(parties.size()-1)[j] = current;
+				union(current, pre);
+				pre = current;
+			}
+		}
+		for (int[] party : parties) {
+			boolean check = false;
+			for (int person : party) {
+				if (find(firstPerson) == find(person)) {
+					check = true;
+				}
+			}
+			if (!check) {
+				cnt++;
+			}
+		}
+		
+		System.out.println(cnt);
+	}
+	
+	public static void union(int a, int b) {
+		if (b == -1) {
+			return;
+		}
+		int first = find(a);
+		int second = find(b);
+		if (first != second) {
+			if (first > second) {
+				partyPeople[first] = partyPeople[second];				
+			} else {
+				partyPeople[second] = partyPeople[first];
+			}
+		}
+	}
+	
+	public static int find(int node) {
+		if (partyPeople[node] == node) {
+			return partyPeople[node];
+		} else {
+			return partyPeople[node] = find(partyPeople[node]);
+		}
+	}
 }
